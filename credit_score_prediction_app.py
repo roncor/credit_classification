@@ -6,9 +6,11 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.naive_bayes import GaussianNB
 from sklearn.feature_selection import SelectKBest, f_classif
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import accuracy_score
+from sklearn.metrics import accuracy_score, confusion_matrix
+import seaborn as sns
+import matplotlib.pyplot as plt
 
-
+st.set_option('deprecation.showPyplotGlobalUse', False)
 # Define the Streamlit application
 def main():
     # Set page title and styles
@@ -110,6 +112,17 @@ def main():
         st.table(evaluation_table)
 
         st.write(f"The best model is {type(best_model).__name__} with accuracy: {round(best_accuracy * 100, 2)}%")
+
+        # Calculate the confusion matrix for the best model
+        y_pred = best_model.predict(X_valid_selected)
+        cm = confusion_matrix(y_valid, y_pred)
+
+        st.write("Confusion Matrix:")
+        plt.figure(figsize=(8, 6))
+        sns.heatmap(cm, annot=True, fmt="d", cmap="Blues")
+        plt.xlabel("Predicted")
+        plt.ylabel("True")
+        st.pyplot()
 
         # Prediction on new data
         st.sidebar.title("Prediction on New Data")
